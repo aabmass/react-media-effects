@@ -131,12 +131,14 @@ class Video extends Component {
           height={canvasHeight}
           width={canvasWidth}
         />
+
+        {/* Setting the height to 0 makes the video show only the controls.
+          Hopefully this works cross browser.. */}
         <video
           ref={this.saveVideoRef}
-          height={0}
-          width={canvasWidth}
           onCanPlay={this.onCanPlay}
-
+          width={canvasWidth}
+          height={0}
           {...restProps}
         />
       </div>
