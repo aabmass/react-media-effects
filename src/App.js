@@ -20,7 +20,7 @@ class App extends Component {
           <Video
             src="https://ia801606.us.archive.org/26/items/Glass_201703/Glass.mp4"
             className="centered"
-            width="600px"
+            width="600"
             controls
           />
         </div>
