@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import Video from './react-media-effects';
+
 class App extends Component {
   render() {
     return (
@@ -10,10 +12,20 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to React</h2>
         </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+
+        <div id="main">
+          <h2>Here are some effects:</h2>       
+
+          {/* open source movie: https://archive.org/details/Glass_201703 */}
+          <Video
+            src="https://ia801606.us.archive.org/26/items/Glass_201703/Glass.mp4"
+            className="centered"
+            width="600px"
+            controls
+          />
+        </div>
       </div>
+
     );
   }
 }
