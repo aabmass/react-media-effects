@@ -132,8 +132,8 @@ class Video extends Component {
           width={canvasWidth}
         />
 
-        {/* Setting the height to 0 makes the video show only the controls.
-          Hopefully this works cross browser.. */}
+        {/* Setting the height to 0 makes the video show only the controls in
+        chrome. Hopefully there is a way to make this work cross browser.. */}
         <video
           ref={this.saveVideoRef}
           onCanPlay={this.onCanPlay}
