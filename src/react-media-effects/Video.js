@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 
 class Video extends Component {
   render() {
-    return <h3>Video Here... Hello World!</h3>
+    return (
+      <div>
+        {/* open source movie: https://archive.org/details/Glass_201703 */}
+        <video {...this.props} />
+      </div>
+    );
   }
 }
 
