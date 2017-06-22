@@ -17,7 +17,7 @@
     "babel-preset-react": "^6.24.1"
   },
   "scripts": {
-    "build": "babel src/media-effects -d lib/",
+    "build": "babel src/react-media-effects -d lib/",
     "clean": "rm -rf lib/ build/",
 
     "start": "react-scripts start",
