@@ -1,7 +1,7 @@
 {
   "name": "react-media-effects",
   "version": "0.1.0",
-  "description": "React components for applying arbitrary effects to HTML media Edit Add topics", 
+  "description": "React components for applying arbitrary effects to HTML media Edit Add topics",
   "main": "lib/index.js",
   "author": "Aaron Abbott <aabmass@gmail.com>",
   "private": true,
@@ -10,16 +10,16 @@
     "react-dom": "^15.6.1"
   },
   "devDependencies": {
-    "react-scripts": "1.0.7",
-
     "babel-cli": "^6.24.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
-    "babel-preset-react": "^6.24.1"
+    "babel-preset-react": "^6.24.1",
+    "react-scripts": "1.0.7"
   },
   "scripts": {
     "build": "babel src/react-media-effects -d lib/",
     "clean": "rm -rf lib/ build/",
-
     "start": "react-scripts start",
     "build-example": "react-scripts build",
     "test": "react-scripts test --env=jsdom",

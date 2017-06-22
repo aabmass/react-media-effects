@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
 class Video extends Component {
-  // TODO: add default props for frameRate
+  static defaultProps = {
+    frameRate: 60
+  }
 
   constructor(props) {
     super(props);
@@ -25,6 +27,7 @@ class Video extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    // TODO: this may be unnecessary, need to test...
     this.createOrUpdateRenderingInterval();
   }
 
