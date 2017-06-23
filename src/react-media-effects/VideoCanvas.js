@@ -5,31 +5,9 @@ class VideoCanvas extends Component {
     frameRate: 60
   }
 
-  constructor(props) {
-    super(props);
-
-    // a true interval is guaranteed to be non-zero, so, if set, intervalId can
-    // be truthy
-    this.intervalId = 0;
-
-    this.state = {
-      videoHeight: 0,
-      videoWidth: 0
-    };
-  }
+  intervalId = 0;
 
   componentDidMount() {
-    // Once the video loads the first frame of data and knows the actual size,
-    // update the state with this info.
-    this.props.videoElement.addEventListener('loadeddata', e => {
-      const { videoHeight, videoWidth } = this.props.videoElement;
-      this.setState({
-        videoHeight,
-        videoWidth
-      });
-    });
-
-    this.props.videoElement.play();
     this.createOrUpdateRenderingInterval();
   }
 
@@ -72,7 +50,7 @@ class VideoCanvas extends Component {
     this.canvasContext = canvas.getContext('2d');
   }
 
-  computeCanvasDimensions(height, width) {
+  computeCanvasDimensions(height, width, videoHeight, videoWidth) {
     /*
      * Canvas dimensions need to be computed based on the constraints given as
      * props (e.g. if one or both of height, width are passed) and the
@@ -83,7 +61,7 @@ class VideoCanvas extends Component {
     
     let canvasHeight = Number(height) || 0;
     let canvasWidth = Number(width) || 0;
-    const aspect = this.state.videoWidth / this.state.videoHeight || 0;
+    const aspect = videoWidth / videoHeight || 0;
 
     if (!aspect) {
       return { canvasHeight, canvasWidth };
@@ -91,8 +69,8 @@ class VideoCanvas extends Component {
 
     // neither given
     if (canvasHeight === 0 && canvasWidth === 0) {
-      canvasHeight = this.state.videoHeight;
-      canvasWidth = this.state.videoWidth;
+      canvasHeight = videoHeight;
+      canvasWidth = videoWidth;
     }
     // only height given
     else if (canvasHeight !== 0 && canvasWidth === 0) {
@@ -119,8 +97,15 @@ class VideoCanvas extends Component {
   }
 
   render() {
-    const { height, width } = this.props;
-    const { canvasHeight, canvasWidth } = this.computeCanvasDimensions(height, width);
+    // Height and width props are the requested ones like you would pass to html
+    // video tag as attribs.
+    const { height, width, videoHeight, videoWidth } = this.props;
+    const { canvasHeight, canvasWidth } = this.computeCanvasDimensions(
+      height,
+      width,
+      videoHeight,
+      videoWidth
+    );
 
     return (
       <div>
