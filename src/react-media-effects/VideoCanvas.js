@@ -22,7 +22,6 @@ class VideoCanvas extends Component {
     // Once the video loads the first frame of data and knows the actual size,
     // update the state with this info.
     this.props.videoElement.addEventListener('loadeddata', e => {
-      console.log(this.props.videoElement.videoHeight);
       const { videoHeight, videoWidth } = this.props.videoElement;
       this.setState({
         videoHeight,
