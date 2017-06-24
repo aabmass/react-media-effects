@@ -36,6 +36,11 @@ export default class VideoFrameData {
     };
   }
 
+  /**
+   * You probably don' want to call this function! This function is designed to
+   * be called only by the constructor when they are ready to update the canvas.
+   * Don't call this if you are implementing filter() function
+   */
   putImageData() {
     this.canvasContext.putImageData(this.imageData, 0, 0);
   }
