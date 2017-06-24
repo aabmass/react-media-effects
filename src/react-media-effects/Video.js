@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import VideoCanvas from './VideoCanvas';
 
+/**
+ * TODO: accept play prop (boolean) that indicates whether or not the video is
+ * currently playing. Eventually, accept percentage seek and volume control
+ * props, too!
+ */
 class Video extends Component {
+  static defaultProps = {
+    play: true
+  }
+
   state = {
     videoElement: null,
     videoHeight: 0,
@@ -9,7 +18,9 @@ class Video extends Component {
   }
 
   componentDidMount() {
-    const videoElement = Object.assign(document.createElement('video'), this.props);
+    // factor out any props that shouldn't be set on the HTMLVideoElement
+    const { play, ...restProps } = this.props;
+    const videoElement = Object.assign(document.createElement('video'), restProps);
 
     // Once the video loads the first frame of data and knows the actual size,
     // update the state with this info.
@@ -20,12 +31,30 @@ class Video extends Component {
         videoWidth
       });
 
-      videoElement.play();
+      this.setVideoPlay(videoElement, this.props.play);
     });
 
     this.setState({
       videoElement: videoElement
     });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // check if any of the playback props have changed and update
+    // this.state.videoElement accordingly
+
+    if (this.props.play !== nextProps.play) {
+      this.setVideoPlay(this.state.videoElement, nextProps.play);
+    }
+  }
+
+  setVideoPlay(videoElement, shouldPlay) {
+    if (shouldPlay) {
+      videoElement.play();
+    }
+    else {
+      videoElement.pause();
+    }
   }
 
   render() {
