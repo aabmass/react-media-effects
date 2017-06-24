@@ -10,24 +10,22 @@ export default class VideoFrameData {
     this.height = height;
   }
 
-  calcBaseIndex(row, col) {
+  calcBaseIndex(col, row) {
     return (this.width * row + col) * 4;
   }
 
-  set(row, col, rgba) {
-    let baseIdx = this.calcBaseIndex(row, col);
+  set(col, row, {r, g, b, a}) {
+    const baseIdx = this.calcBaseIndex(col, row);
 
-    // if an rgba value is not passed in, use the current value
-    const {r, g, b, a} = Object.assign(this.get(row, col), rgba);
-
-    this.imageData.data[baseIdx + 0] = r;
-    this.imageData.data[baseIdx + 1] = g;
-    this.imageData.data[baseIdx + 2] = b;
-    this.imageData.data[baseIdx + 3] = a;
+    // if an rgba value is not passed in, don't modify it
+    if (r) this.imageData.data[baseIdx + 0] = r;
+    if (g) this.imageData.data[baseIdx + 1] = g;
+    if (b) this.imageData.data[baseIdx + 2] = b;
+    if (a) this.imageData.data[baseIdx + 3] = a;
   }
 
-  get(row, col) {
-    let baseIdx = this.calcBaseIndex(row, col);
+  get(col, row) {
+    const baseIdx = this.calcBaseIndex(col, row);
     return {
       r: this.imageData.data[baseIdx + 0],
       g: this.imageData.data[baseIdx + 1],
