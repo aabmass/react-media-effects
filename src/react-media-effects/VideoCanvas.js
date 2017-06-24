@@ -1,4 +1,16 @@
 import React, { Component } from 'react';
+import {
+  computeCanvasDimensions
+} from './canvas-util';
+import VideoFrameData from './VideoFrameData';
+
+/**
+ * Allow performing effects by accepting a filter function:
+ * function filter(data: VideoFrameData) {...}
+ *
+ * VideoFrameData exposes an interface for settings pixel data on the canvas
+ * without needing to calculate indices of the Uint8ClampedArray.
+ */
 
 class VideoCanvas extends Component {
   static defaultProps = {
@@ -32,6 +44,7 @@ class VideoCanvas extends Component {
         return;
       }
 
+      // draw the actual video frame
       this.canvasContext.drawImage(
         this.props.videoElement,
         0,
@@ -39,6 +52,19 @@ class VideoCanvas extends Component {
         this.canvasElement.width,
         this.canvasElement.height,
       );
+
+      // if there is a filter function and the video is already rendering,
+      // filter the current frame.
+      if (this.props.filter && this.canvasElement.width && this.canvasElement.height) {
+        const frameData = new VideoFrameData(
+          this.canvasContext,
+          this.canvasElement.width,
+          this.canvasElement.height
+        );
+        this.props.filter(frameData);
+
+        frameData.putImageData();
+      }
     },
       1000 / this.props.frameRate
     );
@@ -50,57 +76,11 @@ class VideoCanvas extends Component {
     this.canvasContext = canvas.getContext('2d');
   }
 
-  computeCanvasDimensions(height, width, videoHeight, videoWidth) {
-    /*
-     * Canvas dimensions need to be computed based on the constraints given as
-     * props (e.g. if one or both of height, width are passed) and the
-     * dimensions of the video being played (i.e. the videoHeight and videoWidth
-     * of the actual media). If both are given, choose keep the aspect ratio
-     * without exceeding the given values.
-     */
-    
-    let canvasHeight = Number(height) || 0;
-    let canvasWidth = Number(width) || 0;
-    const aspect = videoWidth / videoHeight || 0;
-
-    if (!aspect) {
-      return { canvasHeight, canvasWidth };
-    }
-
-    // neither given
-    if (canvasHeight === 0 && canvasWidth === 0) {
-      canvasHeight = videoHeight;
-      canvasWidth = videoWidth;
-    }
-    // only height given
-    else if (canvasHeight !== 0 && canvasWidth === 0) {
-      canvasWidth = aspect * canvasHeight;
-    }
-    // only width given
-    else if (canvasWidth !== 0 && canvasHeight === 0) {
-      canvasHeight = canvasWidth / aspect;
-    }
-    // both given
-    else {
-      const possibleHeight = canvasWidth / aspect;
-      const possibleWidth = aspect * canvasHeight;
-
-      if (possibleHeight < canvasHeight) {
-        canvasHeight = possibleHeight;
-      }
-      else {
-        canvasWidth = possibleWidth;
-      }
-    }
-
-    return { canvasHeight, canvasWidth };
-  }
-
   render() {
     // Height and width props are the requested ones like you would pass to html
     // video tag as attribs.
     const { height, width, videoHeight, videoWidth } = this.props;
-    const { canvasHeight, canvasWidth } = this.computeCanvasDimensions(
+    const { canvasHeight, canvasWidth } = computeCanvasDimensions(
       height,
       width,
       videoHeight,

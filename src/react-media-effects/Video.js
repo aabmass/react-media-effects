@@ -65,6 +65,7 @@ class Video extends Component {
           frameRate={this.props.frameRate}
           height={this.props.height}
           width={this.props.width}
+          filter={this.props.filter}
           videoHeight={this.state.videoHeight}
           videoWidth={this.state.videoWidth}
         />
