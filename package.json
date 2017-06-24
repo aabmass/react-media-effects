@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "React components for applying arbitrary effects to HTML media Edit Add topics",
   "main": "lib/index.js",
-  "author": "Aaron Abbott <aabmass@gmail.com>",
+  "author": "Aaron Abbott <aaron.abbott1@gmail.com>",
   "private": true,
   "dependencies": {
     "react": "^15.6.1",
