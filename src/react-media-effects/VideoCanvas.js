@@ -2,6 +2,15 @@ import React, { Component } from 'react';
 import {
   computeCanvasDimensions
 } from './canvas-util';
+import VideoFrameData from './VideoFrameData';
+
+/**
+ * Allow performing effects by accepting a filter function:
+ * function filter(data: VideoFrameData) {...}
+ *
+ * VideoFrameData exposes an interface for settings pixel data on the canvas
+ * without needing to calculate indices of the Uint8ClampedArray.
+ */
 
 class VideoCanvas extends Component {
   static defaultProps = {
@@ -35,6 +44,7 @@ class VideoCanvas extends Component {
         return;
       }
 
+      // draw the actual video frame
       this.canvasContext.drawImage(
         this.props.videoElement,
         0,
@@ -42,6 +52,19 @@ class VideoCanvas extends Component {
         this.canvasElement.width,
         this.canvasElement.height,
       );
+
+      // if there is a filter function and the video is already rendering,
+      // filter the current frame.
+      if (this.props.filter && this.canvasElement.width && this.canvasElement.height) {
+        const frameData = new VideoFrameData(
+          this.canvasContext,
+          this.canvasElement.width,
+          this.canvasElement.height
+        );
+        this.props.filter(frameData);
+
+        frameData.putImageData();
+      }
     },
       1000 / this.props.frameRate
     );

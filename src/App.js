@@ -4,6 +4,18 @@ import './App.css';
 
 import Video from './react-media-effects';
 
+function filter(frameData) {
+  // for testing, just set top left corner partially transparent with alpha
+  // channel
+  for (var i = 0; i < 50; ++i) {
+    for (var j = 0; j < 50; ++j) {
+      frameData.set(i, j, {
+        a: 100
+      });
+    }
+  }
+}
+
 class App extends Component {
   state = {
     play: true
@@ -29,10 +41,11 @@ class App extends Component {
 
           {/* open source movie: https://archive.org/details/Glass_201703 */}
           <Video
-            src="https://ia801606.us.archive.org/26/items/Glass_201703/Glass.mp4"
+            src="Glass.mp4"
             className="centered"
             width="600"
             controls
+            filter={filter}
             play={this.state.play}
           />
 
