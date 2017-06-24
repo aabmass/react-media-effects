@@ -4,14 +4,35 @@ import './App.css';
 
 import Video from './react-media-effects';
 
-function filter(frameData) {
-  // for testing, just set top left corner partially transparent with alpha
+function alphaTopCornerFilter(frameData) {
+  // for testing, just set top right corner partially transparent with alpha
   // channel
-  for (var i = 0; i < 50; ++i) {
-    for (var j = 0; j < 50; ++j) {
+  for (var i = frameData.width - 1; i > frameData.width - 200; --i) {
+    for (var j = 0; j < 100; ++j) {
       frameData.set(i, j, {
-        a: 100
+        a: 200
       });
+    }
+  }
+}
+
+function horizontalDerivative(frameData) {
+  // an edge detection effect
+  for (var i = 0; i < frameData.width - 1; ++i) {
+    for (var j = 0; j < frameData.height; ++j) {
+      const right = frameData.get(i + 1, j);
+      const left = frameData.get(i, j);
+      let diff = {
+        r: right.r - left.r,
+        g: right.g - left.g,
+        b: right.b - left.b,
+      }
+      const scale = 10;
+      diff.r *= scale;
+      diff.g *= scale;
+      diff.b *= scale;
+
+      frameData.set(i, j, diff);
     }
   }
 }
@@ -45,7 +66,7 @@ class App extends Component {
             className="centered"
             width="600"
             controls
-            filter={filter}
+            filter={horizontalDerivative}
             play={this.state.play}
           />
 
