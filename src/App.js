@@ -5,6 +5,17 @@ import './App.css';
 import Video from './react-media-effects';
 
 class App extends Component {
+  state = {
+    play: true
+  }
+
+  onPlayPause = e => {
+    // toggle
+    this.setState({
+      play: !this.state.play
+    });
+  }
+
   render() {
     return (
       <div className="App">
@@ -22,10 +33,14 @@ class App extends Component {
             className="centered"
             width="600"
             controls
+            play={this.state.play}
           />
+
+          <div className="controls">
+            <button onClick={this.onPlayPause}>Play/Pause</button>
+          </div>
         </div>
       </div>
-
     );
   }
 }

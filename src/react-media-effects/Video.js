@@ -1,149 +1,74 @@
 import React, { Component } from 'react';
+import VideoCanvas from './VideoCanvas';
 
+/**
+ * TODO: accept play prop (boolean) that indicates whether or not the video is
+ * currently playing. Eventually, accept percentage seek and volume control
+ * props, too!
+ */
 class Video extends Component {
   static defaultProps = {
-    frameRate: 60
+    play: true
   }
 
-  constructor(props) {
-    super(props);
-
-    // a true interval is guaranteed to be non-zero, so, if set, intervalId can
-    // be truthy
-    this.intervalId = 0;
-
-    this.state = {
-      videoHeight: 0,
-      videoWidth: 0
-    };
+  state = {
+    videoElement: null,
+    videoHeight: 0,
+    videoWidth: 0
   }
 
   componentDidMount() {
-    // update the state with the true size of the video DOM element and let
-    // react handle re-rendering the canvas with this new size
+    // factor out any props that shouldn't be set on the HTMLVideoElement
+    const { play, ...restProps } = this.props;
+    const videoElement = Object.assign(document.createElement('video'), restProps);
 
-    this.videoElement.play();
-    this.createOrUpdateRenderingInterval();
-  }
+    // Once the video loads the first frame of data and knows the actual size,
+    // update the state with this info.
+    videoElement.addEventListener('loadeddata', e => {
+      const { videoHeight, videoWidth } = videoElement;
+      this.setState({
+        videoHeight,
+        videoWidth
+      });
 
-  componentDidUpdate(prevProps, prevState) {
-    // TODO: this may be unnecessary, need to test...
-    this.createOrUpdateRenderingInterval();
-  }
+      this.setVideoPlay(videoElement, this.props.play);
+    });
 
-  createOrUpdateRenderingInterval() {
-    /*
-     * Set up interval based on props. If there is already an interval running,
-     * clear it as well.
-     */
-
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
-
-    this.intervalId = setInterval(() => {
-      if (!this.canvasElement || !this.canvasContext) {
-        // the refs don't exist yet, just return
-        return;
-      }
-
-      this.canvasContext.drawImage(
-        this.videoElement,
-        0,
-        0,
-        this.canvasElement.width,
-        this.canvasElement.height,
-      );
-    },
-      1000 / this.props.frameRate
-    );
-  }
-
-  saveCanvasRef = canvas => {
-    // save a ref to the canvas element, and a 2d context for the canvas
-    this.canvasElement = canvas;
-    this.canvasContext = canvas.getContext('2d');
-  }
-
-  saveVideoRef = video => {
-    this.videoElement = video;
-  }
-
-  onCanPlay = e => {
-    const { videoHeight, videoWidth } = this.videoElement;
     this.setState({
-      videoHeight,
-      videoWidth
+      videoElement: videoElement
     });
   }
 
-  computeCanvasDimensions(height, width) {
-    /*
-     * Canvas dimensions need to be computed based on the constraints given as
-     * props (e.g. if one or both of height, width are passed) and the
-     * dimensions of the video being played (i.e. the videoHeight and videoWidth
-     * of the actual media). If both are given, choose keep the aspect ratio
-     * without exceeding the given values.
-     */
-    
-    let canvasHeight = Number(height) || 0;
-    let canvasWidth = Number(width) || 0;
-    const aspect = this.state.videoWidth / this.state.videoHeight || 0;
+  componentWillReceiveProps(nextProps) {
+    // check if any of the playback props have changed and update
+    // this.state.videoElement accordingly
 
-    if (!aspect) {
-      return { canvasHeight, canvasWidth };
+    if (this.props.play !== nextProps.play) {
+      this.setVideoPlay(this.state.videoElement, nextProps.play);
     }
+  }
 
-    // neither given
-    if (canvasHeight === 0 && canvasWidth === 0) {
-      canvasHeight = this.state.videoHeight;
-      canvasWidth = this.state.videoWidth;
+  setVideoPlay(videoElement, shouldPlay) {
+    if (shouldPlay) {
+      videoElement.play();
     }
-    // only height given
-    else if (canvasHeight !== 0 && canvasWidth === 0) {
-      canvasWidth = aspect * canvasHeight;
-    }
-    // only width given
-    else if (canvasWidth !== 0 && canvasHeight === 0) {
-      canvasHeight = canvasWidth / aspect;
-    }
-    // both given
     else {
-      const possibleHeight = canvasWidth / aspect;
-      const possibleWidth = aspect * canvasHeight;
-
-      if (possibleHeight < canvasHeight) {
-        canvasHeight = possibleHeight;
-      }
-      else {
-        canvasWidth = possibleWidth;
-      }
+      videoElement.pause();
     }
-
-    return { canvasHeight, canvasWidth };
   }
 
   render() {
-    const { height, width, ...restProps } = this.props;
-    const { canvasHeight, canvasWidth } = this.computeCanvasDimensions(height, width);
-
     return (
       <div>
-        <canvas
-          ref={this.saveCanvasRef}
-          height={canvasHeight}
-          width={canvasWidth}
+        <VideoCanvas
+          videoElement={this.state.videoElement}
+          frameRate={this.props.frameRate}
+          height={this.props.height}
+          width={this.props.width}
+          videoHeight={this.state.videoHeight}
+          videoWidth={this.state.videoWidth}
         />
-
-        {/* Setting the height to 0 makes the video show only the controls in
-        chrome. Hopefully there is a way to make this work cross browser.. */}
-        <video
-          ref={this.saveVideoRef}
-          onCanPlay={this.onCanPlay}
-          width={canvasWidth}
-          height={0}
-          {...restProps}
-        />
+        {/* controls will go here */}
       </div>
     );
   }
