@@ -1,0 +1,3 @@
+# ignore everything except the react-media-effects module folder
+*
+!react-media-effects/*
