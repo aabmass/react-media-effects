@@ -48,8 +48,7 @@ const rowDiffFilter = (frameData) => {
         g: right.g - left.g,
         b: right.b - left.b,
       }
-      const scale = 10;
-      diff.r *= scale;
+      const scale = 10; diff.r *= scale;
       diff.g *= scale;
       diff.b *= scale;
 
@@ -110,3 +109,26 @@ in the video frame.
 #### Using the `CanvasRenderingContext2D` directly
 If you'd really like to instead modify the canvas on your own with the
 `CanvasRenderingContext2D`, it is accessible as `VideoFrameData.canvasContext`.
+
+#### Example
+```js
+const rowDiffFilter = (frameData) => {
+  // an edge detection effect by taking the difference across a row
+  for (var i = 0; i < frameData.width - 1; ++i) {
+    for (var j = 0; j < frameData.height; ++j) {
+      const right = frameData.get(i + 1, j);
+      const left = frameData.get(i, j);
+      let diff = {
+        r: right.r - left.r,
+        g: right.g - left.g,
+        b: right.b - left.b,
+      }
+      const scale = 10; diff.r *= scale;
+      diff.g *= scale;
+      diff.b *= scale;
+
+      frameData.set(i, j, diff);
+    }
+  }
+};
+```
