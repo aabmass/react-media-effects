@@ -1,6 +1,6 @@
 {
   "name": "react-media-effects",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React components for applying arbitrary effects to HTML media Edit Add topics",
   "main": "lib/index.js",
   "author": "Aaron Abbott <aaron.abbott1@gmail.com>",
