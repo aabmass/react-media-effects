@@ -34,11 +34,26 @@ import Video from 'react-media-effects';
 
 const greenFilter = (frameData) => {
   // increase the green channel of every pixel in the frame for a green tint
+  frameData.map(({ /* r, b, a, */ g }) => ({g: g + 50}) );
+};
+
+const rowDiffFilter = (frameData) => {
+  // an edge detection effect by taking the difference across a row
   for (var i = 0; i < frameData.width - 1; ++i) {
     for (var j = 0; j < frameData.height; ++j) {
-      const pix = frameData.get(i, j);
-      pix.g += 50;
-      frameData.set(i, j, pix);
+      const right = frameData.get(i + 1, j);
+      const left = frameData.get(i, j);
+      let diff = {
+        r: right.r - left.r,
+        g: right.g - left.g,
+        b: right.b - left.b,
+      }
+      const scale = 10;
+      diff.r *= scale;
+      diff.g *= scale;
+      diff.b *= scale;
+
+      frameData.set(i, j, diff);
     }
   }
 };
@@ -89,6 +104,8 @@ value will be kept, e.g. `{r: 10, g: 100}` will modify only the red and green
 channels.
 * `get(col: integer, row: integer) -> rgba: Object` - Get the value of pixel
 in the video frame.
+* `map(mapFunc: function)` - Goes over each pixel, passes `mapFunc()` an `rgba`
+  and sets the pixel to `mapFunc()`'s return value.
 
 #### Using the `CanvasRenderingContext2D` directly
 If you'd really like to instead modify the canvas on your own with the

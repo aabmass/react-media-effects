@@ -3,13 +3,7 @@ import Video from './react-media-effects';
 
 const greenFilter = (frameData) => {
   // increase the green channel of every pixel in the frame for a green tint
-  for (var i = 0; i < frameData.width - 1; ++i) {
-    for (var j = 0; j < frameData.height; ++j) {
-      const pix = frameData.get(i, j);
-      pix.g += 50;
-      frameData.set(i, j, pix);
-    }
-  }
+  frameData.map(({ /* r, b, a, */ g }) => ({g: g + 50}) );
 };
 
 // eslint-disable-next-line

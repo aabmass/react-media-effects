@@ -14,6 +14,14 @@ export default class VideoFrameData {
     return (this.width * row + col) * 4;
   }
 
+  map(mapFunc) {
+    for (var i = 0; i < this.width; ++i) {
+      for (var j = 0; j < this.height; ++j) {
+        this.set(i, j, mapFunc(this.get(i, j)));
+      }
+    }
+  }
+
   set(col, row, {r, g, b, a}) {
     const baseIdx = this.calcBaseIndex(col, row);
 
