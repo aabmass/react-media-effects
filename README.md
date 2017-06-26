@@ -2,9 +2,11 @@ react-media-effects
 ========
 React components for applying arbitrary visual effects to HTML media.
 
-## Install
-[NPM Package](https://www.npmjs.com/package/react-media-effects)
+[![npm](https://img.shields.io/npm/v/react-media-effects.svg?style=flat-square)](https://www.npmjs.com/package/react-media-effects)
+[![npm](https://img.shields.io/npm/dy/react-media-effects.svg?style=flat-square)](https://www.npmjs.com/package/react-media-effects)
+[![npm](https://img.shields.io/npm/l/express.svg?style=flat-square)](https://www.npmjs.com/package/react-media-effects)
 
+## Install
 ```sh
 npm install --save react-media-effects
 # or
